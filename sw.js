@@ -1,11 +1,11 @@
 /* 머리에 그리는: 한 번 열면 인터넷이 없어도 열리게 합니다. 앱을 고치면 아래 버전 숫자를 하나 올려 주세요. */
-const VERSION = 'playground-v3';
+const VERSION = 'playground-v5';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-48.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {
   const req = e.request; if (req.method !== 'GET') return;
-  if (req.headers.has('range') || req.destination === 'audio' || req.url.endsWith('.mp3')) return;   // 노래는 그때그때 받아서 재생
+  if (req.headers.has('range') || req.destination === 'audio' || req.destination === 'video' || /\.(mp3|mp4)$/.test(new URL(req.url).pathname)) return;   // 노래·영상은 그때그때 받아서 재생
   const url = new URL(req.url);
   if (req.mode === 'navigate') {            // 화면: 새 내용을 먼저, 안 되면 저장본
     e.respondWith(fetch(req).then(r => { const cp = r.clone(); caches.open(VERSION).then(c => c.put(req, cp)); return r; })
