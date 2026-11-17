@@ -1,5 +1,5 @@
 /* 머리에 그리는: 한 번 열면 인터넷이 없어도 열리게 합니다. 앱을 고치면 아래 버전 숫자를 하나 올려 주세요. */
-const VERSION = 'playground-v5';
+const VERSION = 'playground-v6';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-48.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
